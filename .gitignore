@@ -23,7 +23,7 @@ build/*
 node_modules/*
 */node_modules
 */node_modules/*
-.env.example
+.env
 .idea
 *.DS_Store
 contracts/TEST.sol
