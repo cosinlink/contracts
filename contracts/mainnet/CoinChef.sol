@@ -45,7 +45,7 @@ contract CoinChef is Ownable {
     // The MDX TOKEN!
     IMdx public mdx;
     // MDX tokens created per block.
-    uint256 public constant mdxPerBlock = 100 ** 1e18;
+    uint256 public constant mdxPerBlock = 100 * 1e18;
     // Info of each pool.
     PoolInfo[] public poolInfo;
     // Info of each user that stakes LP tokens.

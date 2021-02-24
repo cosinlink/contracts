@@ -13,3 +13,18 @@ typings/
 .nyc_output/
 build/
 file/
+
+#Buidler files
+cache
+artifacts
+
+build
+build/*
+node_modules/*
+*/node_modules
+*/node_modules/*
+.env.example
+.idea
+*.DS_Store
+contracts/TEST.sol
+
