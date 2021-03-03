@@ -1,7 +1,7 @@
 const { getTokenPrice } = require('./dex.js')
 const log = console.log.bind(console)
 
-const test = async () => {
+const test1 = async () => {
     const usdTokenInfo = {
         address: '0xa71edc38d189767582c38a3145b5873052c3e47a',
         decimals: 18
@@ -12,16 +12,21 @@ const test = async () => {
         decimals: 18
     }
 
-    const tokenPrice = await getTokenPrice(
+    const tokenPriceInfo = await getTokenPrice(
         '0xc189c6c138e78e8a4c1f1633e4c402e0c49a6049',
         usdTokenInfo,
         hboTokenInfo
     )
 
-    log(`${hboTokenInfo.symbol}/${usdTokenInfo.symbol} Price: ${tokenPrice.toFixed(4)}`)
+    log(`${hboTokenInfo.symbol}/${usdTokenInfo.symbol} Price: ${tokenPriceInfo.price.toFixed(4)}`)
+    log(`${ 
+        tokenPriceInfo.balanceUsdToken / 10**usdTokenInfo.decimals 
+    }, ${ 
+        tokenPriceInfo.balanceToken / 10**hboTokenInfo.decimals
+    }`)
 }
 
-test()
+test1()
     .then(() => process.exit(0))
     .catch(error => {
         console.error(error);

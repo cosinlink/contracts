@@ -1,5 +1,5 @@
 
-const getInstance = async (contractAddress) => {
+const getTokenInstance = async (contractAddress) => {
     return await ethers.getContractAt(
         'MdexPair',
         contractAddress
@@ -9,7 +9,7 @@ const getInstance = async (contractAddress) => {
 const fetchTokenInfo = async (tokenInfo) => {
     // 1. instance
     if (!tokenInfo.instance) {
-        tokenInfo.instance = await getInstance(tokenInfo.address)
+        tokenInfo.instance = await getTokenInstance(tokenInfo.address)
     }
 
     // 2. decimals
@@ -43,11 +43,17 @@ const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
     const balanceToken = await tokenInfo.instance.callStatic.balanceOf(lpAddress)
 
     // should consider decimals
-    return (balanceUsdToken / 10**usdTokenInfo.decimals) / (balanceToken / 10**tokenInfo.decimals)
+    const price = (balanceUsdToken / 10**usdTokenInfo.decimals) / (balanceToken / 10**tokenInfo.decimals)
+
+    return {
+        price,
+        balanceUsdToken,
+        balanceToken,
+    }
 }
 
 module.exports = {
-    getInstance,
+    getTokenInstance,
     fetchTokenInfo,
     getTokenPrice
 }
