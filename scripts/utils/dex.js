@@ -26,6 +26,20 @@ const fetchTokenInfo = async (tokenInfo) => {
     // if (!tokenInfo.totalSupply) {
     //     tokenInfo.totalSupply = await tokenInfo.instance.callStatic.totalSupply();
     // }
+
+    return tokenInfo
+}
+
+const fetchPoolInfo = async (poolInfo) => {
+    // 1. instance
+    if (!poolInfo.instance) {
+        poolInfo.instance = await ethers.getContractAt(
+            'NFIUSDTPool',
+            poolInfo.address
+        )
+    }
+
+    return poolInfo
 }
 
 /*
@@ -53,10 +67,9 @@ const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
     }
 }
 
-
-
 module.exports = {
     getTokenInstance,
     fetchTokenInfo,
-    getTokenPrice
+    getTokenPrice,
+    fetchPoolInfo
 }
