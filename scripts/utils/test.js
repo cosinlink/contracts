@@ -23,6 +23,8 @@ const test1 = async () => {
         tokenPriceInfo.balanceUsdToken / 10**usdTokenInfo.decimals 
     }, ${ 
         tokenPriceInfo.balanceToken / 10**hboTokenInfo.decimals
+    }, ${ 
+        tokenPriceInfo.lpTotalValue / 1e18
     }`)
 }
 

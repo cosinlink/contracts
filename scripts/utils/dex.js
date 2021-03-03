@@ -49,8 +49,11 @@ const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
         price,
         balanceUsdToken,
         balanceToken,
+        lpTotalValue: balanceUsdToken.mul(2)
     }
 }
+
+
 
 module.exports = {
     getTokenInstance,
