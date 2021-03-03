@@ -1,5 +1,5 @@
 const { getTokenPrice } = require('./dex.js')
-const { calcPoolTotalTokenValue } = require('./pool.js')
+const { calcPoolTotalTokenValue, calcPoolsTVL } = require('./pool.js')
 const log = console.log.bind(console)
 
 const test1 = async () => {
@@ -36,42 +36,54 @@ const test2 = async () => {
 }
 
 const test3 = async () => {
-    const poolInfo = {
-        address: '0x7565a0a69156549c8e1eb2c219458018c3aaf196'
-    }
+    let poolVec = [
+        {
+            name: "HBO-USDT-LP",
+            tokenAddress: "0xc189c6c138e78e8a4c1f1633e4c402e0c49a6049",
+            poolAddress: "0x7565a0a69156549c8e1eb2c219458018c3aaf196",
+            value: ""
+        },
+        {
+            name: "HBO-HBTC-LP",
+            tokenAddress: "0xa6e787c0efc68c9a400db05e7764ff2d224c4f6a",
+            poolAddress: "0xe43dE0a82e4229eC05b629E4656561903029ADef",
+            value: ""
+        },
+        {
+            name: "HBO-HT-LP",
+            tokenAddress: "0x235d09d666fb95ea422ef8d3523936a6140b20bb",
+            poolAddress: "0xc3c59D153612166aC5ae10EBd643467363dDc1F0",
+            value: ""
+        },
+        {
+            name: "HBO-HUSD-LP",
+            tokenAddress: "0x2eb1efe826c462105adf724f8307416d605e40a7",
+            poolAddress: "0xb8dD7B1b69B17492e1d26a46aF00366088F36e32",
+            value: ""
+        },
+        {
+            name: "HBO",
+            tokenAddress: "0x8764bd4fcc027faf72ba83c0b2028a3bae0d2d57",
+            poolAddress: "0x0f1228dfb46a92825858ec417db7fb3b542c1df8",
+            value: ""
+        },
+    ]
 
-    const lpInfo = {
-        address: '0xc189c6c138e78e8a4c1f1633e4c402e0c49a6049'
-    }
+    const lpUsdtHbo = "0xc189c6c138e78e8a4c1f1633e4c402e0c49a6049"
 
-    const usdtTokenInfo = {
-        address: '0xa71edc38d189767582c38a3145b5873052c3e47a',
-        decimals: 18
-    }
-
-    const hboTokenInfo = {
-        address: '0x8764bd4fcc027faf72ba83c0b2028a3bae0d2d57',
-        decimals: 18
-    }
-
-    const poolTotalTokenValueByHBO = await calcPoolTotalTokenValue(
-        poolInfo,
-        lpInfo,
-        hboTokenInfo,
-        usdtTokenInfo,
-        true
+    const tvl = await calcPoolsTVL(
+        poolVec,
+        lpUsdtHbo,
+        {
+            address: "0x8764bd4fcc027faf72ba83c0b2028a3bae0d2d57",
+            decimals: 18
+        },
+        {
+            address: "0xa71edc38d189767582c38a3145b5873052c3e47a",
+            decimals: 18
+        }
     )
-
-    log(`poolTotalTokenValueByHBO: ${ poolTotalTokenValueByHBO / 1e18 }`)
-    log(Object.keys(poolInfo))
-
-
-    const { price } = await getTokenPrice(
-        lpInfo.address,
-        usdtTokenInfo,
-        hboTokenInfo
-    )
-    log(`TVL: ${ poolTotalTokenValueByHBO / 1e18 * price }`)
+    log('tvl: ', tvl)
 }
 
 const main = async () => {

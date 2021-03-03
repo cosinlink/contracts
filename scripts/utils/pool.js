@@ -1,14 +1,13 @@
-const { getTokenPrice, fetchTokenInfo, fetchPoolInfo } = require('./dex.js')
-
+const {getTokenPrice, fetchTokenInfo, fetchPoolInfo, getTokenValueFromLp} = require('./dex.js')
+const log = console.log.bind(console)
 
 // example
 // 1. TotalTokenValue of HBO pool = All HBO Amount staked in pool
 // 2. TotalTokenValue of HBO-USDT-LP pool = (All HBO Amount from HBO-USDT-LP Amount staked in pool) * 2
-const calcPoolTotalTokenValue = async (poolInfo, stakeTokenInfo, basicTokenInfo, tokenInfo, isLpToken = true) => {
+const calcPoolTotalTokenValue = async (poolInfo, stakeTokenInfo, basicTokenInfo, isLpToken = true) => {
     await fetchPoolInfo(poolInfo)
     await fetchTokenInfo(stakeTokenInfo)
     await fetchTokenInfo(basicTokenInfo)
-    await fetchTokenInfo(tokenInfo)
     const stakedTokenInstance = stakeTokenInfo.instance
     const poolInstance = poolInfo.instance
 
@@ -21,14 +20,43 @@ const calcPoolTotalTokenValue = async (poolInfo, stakeTokenInfo, basicTokenInfo,
 
     // 2. HBO-xxx-LP pool
     const lpTotalSupply = await stakedTokenInstance.callStatic.totalSupply()
-    const { lpTotalValue } = await getTokenPrice(
+    const lpTotalValue = await getTokenValueFromLp(
         stakeTokenInfo.address,
         basicTokenInfo,
-        tokenInfo
     )
+
     return totalStakedAmount / lpTotalSupply * lpTotalValue
 }
 
+const calcPoolsTVL = async (poolVec, lpAddress, basicTokenInfo, usdtTokenInfo) => {
+    const {price} = await getTokenPrice(
+        lpAddress,
+        usdtTokenInfo,
+        basicTokenInfo
+    )
+
+    let sumValue = 0
+    for (const poolObj of poolVec) {
+        const isLp = poolObj.name.endsWith('LP')
+        log(poolObj.name)
+        const tokenValue = await calcPoolTotalTokenValue(
+            {
+                address: poolObj.poolAddress
+            },
+            {
+                address: poolObj.tokenAddress
+            },
+            basicTokenInfo,
+            isLp
+        )
+        sumValue = sumValue + tokenValue / 10**basicTokenInfo.decimals
+    }
+
+    return sumValue * price
+}
+
+
 module.exports = {
-    calcPoolTotalTokenValue
+    calcPoolTotalTokenValue,
+    calcPoolsTVL
 }

@@ -67,9 +67,16 @@ const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
     }
 }
 
+const getTokenValueFromLp = async (lpAddress, basicTokenInfo) => {
+    await fetchTokenInfo(basicTokenInfo)
+    const balance = await basicTokenInfo.instance.callStatic.balanceOf(lpAddress)
+    return balance.mul(2)
+}
+
 module.exports = {
     getTokenInstance,
     fetchTokenInfo,
     getTokenPrice,
-    fetchPoolInfo
+    fetchPoolInfo,
+    getTokenValueFromLp
 }
