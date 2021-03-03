@@ -18,7 +18,7 @@ const test = async () => {
         hboTokenInfo
     )
 
-    log(hboTokenInfo.symbol, usdTokenInfo.symbol, tokenPrice)
+    log(`${hboTokenInfo.symbol}/${usdTokenInfo.symbol} Price: ${tokenPrice.toFixed(4)}`)
 }
 
 test()
