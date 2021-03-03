@@ -28,6 +28,13 @@ const fetchTokenInfo = async (tokenInfo) => {
     // }
 }
 
+/*
+    @param tokenInfo
+    const usdTokenInfo = {
+        address: '0xa71edc38d189767582c38a3145b5873052c3e47a',
+        decimals: 18
+    }
+* */
 const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
     await fetchTokenInfo(usdTokenInfo)
     await fetchTokenInfo(tokenInfo)
