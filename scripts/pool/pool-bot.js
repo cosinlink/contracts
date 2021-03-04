@@ -1,4 +1,119 @@
-const { getTokenPrice } = require('../utils/dex.js')
-const { calcPoolTotalTokenValue } = require('../utils/pool.js')
+const { fetchTokenInfo } = require('../utils/dex.js')
+const {generateCalls, multiCall} = require('../utils/multicall')
+const {hexToBigNumber} = require('../utils/string')
+const {sleep} = require("../utils/util");
 
+const log = console.log.bind(console)
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const poolVec = require(__dirname + "/../deploy/deployments/hbo-pools.json")
+
+const multiCallGetTvl = async () => {
+    const callObjVec = []
+
+    const lpUsdHbo = poolVec[0].tokenAddress
+    const hboTokenInfo = {
+        address: '0x8764bd4fcc027faf72ba83c0b2028a3bae0d2d57',
+        decimals: 18
+    }
+    const usdTokenInfo = {
+        address: '0xa71edc38d189767582c38a3145b5873052c3e47a',
+        decimals: 18
+    }
+    await fetchTokenInfo(hboTokenInfo)
+    await fetchTokenInfo(usdTokenInfo)
+
+    // ## add multicall
+    for (const poolObj of poolVec) {
+        // 1. get totalStakedAmount
+        callObjVec.push({
+            target: poolObj.poolAddress,
+            instance: await ethers.getContractAt('NFIUSDTPool', ZERO_ADDRESS),
+            functionName: 'totalSupply',
+            params: []
+        })
+
+        // 2. get lpTotalSupply from lpInstance
+        callObjVec.push({
+            target: poolObj.tokenAddress,
+            instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+            functionName: 'totalSupply',
+            params: []
+        })
+
+        // 3. get the token balance of lpTokenAddress in the tokenInstance
+        callObjVec.push({
+            target: hboTokenInfo.address,
+            instance: hboTokenInfo.instance,
+            functionName: 'balanceOf',
+            params: [poolObj.tokenAddress]
+        })
+    }
+
+    // 4. get price
+    callObjVec.push({
+        target: usdTokenInfo.address,
+        instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+        functionName: 'balanceOf',
+        params: [lpUsdHbo]
+    })
+    callObjVec.push({
+        target: hboTokenInfo.address,
+        instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+        functionName: 'balanceOf',
+        params: [lpUsdHbo]
+    })
+
+    const {returnData} = await multiCall(await generateCalls(callObjVec), true)
+    const returnDataVec = [...returnData]
+
+    let sumValue = 0
+    // ## decode returnData by multicall order
+    // - 1. pools
+    for (const poolObj of poolVec) {
+        const isLp = poolObj.name.endsWith('LP')
+        const totalStakedAmount = hexToBigNumber(returnDataVec.shift())
+        const lpTotalSupply = hexToBigNumber(returnDataVec.shift())
+        const tokenBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
+
+        let TVLByTokenValue
+        if (isLp) {
+            // should double for lp !!!! don't forget
+            TVLByTokenValue = totalStakedAmount.mul(tokenBalanceOfLpAddress).div(lpTotalSupply)
+            TVLByTokenValue = TVLByTokenValue.mul(2)
+        } else {
+            // single token pool
+            TVLByTokenValue = totalStakedAmount
+        }
+
+        sumValue = sumValue + TVLByTokenValue / 1e18
+    }
+
+    // - 2. get price
+    const usdtBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
+    const tokenBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
+    const price = (usdtBalanceOfLpAddress / 10**usdTokenInfo.decimals) / (tokenBalanceOfLpAddress / 10**hboTokenInfo.decimals)
+    const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
+    const date = new Date(timestamp * 1000)
+    const tvl = sumValue * price
+    log(`${date.toLocaleString()} | HBO price: ${price.toFixed(2)} | TVL: ${tvl.toFixed(2)}`)
+}
+
+const main = async () => {
+    while (true) {
+        try {
+            await multiCallGetTvl()
+            await sleep(3)
+        } catch (e) {
+            log(`----error: ${e}, restart after 10s`)
+            await sleep(10)
+        }
+    }
+}
+
+main()
+    .then(() => process.exit(0))
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
+    });
 
