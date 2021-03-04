@@ -131,11 +131,35 @@ const test4 = async () => {
 
 }
 
+const testMultiCall = async () => {
+    const poolInstance = await ethers.getContractAt(
+        'NFIUSDTPool',
+        "0x0000000000000000000000000000000000000000"
+    )
+
+    /*
+    *   @dev other way to generate calldata
+    *    let ABI = [
+    *        "function totalSupply()"
+    *    ]
+    *    let iface = new ethers.utils.Interface(ABI);
+    *    log(`calldata: `, iface.encodeFunctionData("totalSupply"))=
+    * */
+    const tx = await poolInstance.populateTransaction.balanceOf('0x92531122B728cbEd7FDA325Ac8690A9681684C04');
+    const callObj = {
+        target: '0x7565a0a69156549c8e1eb2c219458018c3aaf196',  // contract address to call
+        callData: tx.data  //
+    }
+
+    let res = await multiCall([callObj])
+    log(ethers.BigNumber.from(res.returnData[0]) / 1e18.toString())
+}
+
 const main = async () => {
     // await test1()
     // await test2()
     // await test3()
-    await test4()
+    // await test4()
 }
 
 main()

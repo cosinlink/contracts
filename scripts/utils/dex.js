@@ -13,14 +13,14 @@ const fetchTokenInfo = async (tokenInfo) => {
     }
 
     // 2. decimals
-    if (!tokenInfo.decimals) {
-        tokenInfo.decimals = await tokenInfo.instance.callStatic.decimals();
-    }
+    // if (!tokenInfo.decimals) {
+    //     tokenInfo.decimals = await tokenInfo.instance.callStatic.decimals();
+    // }
 
     // 3. symbol
-    if (!tokenInfo.symbol) {
-        tokenInfo.symbol = await tokenInfo.instance.callStatic.symbol();
-    }
+    // if (!tokenInfo.symbol) {
+    //     tokenInfo.symbol = await tokenInfo.instance.callStatic.symbol();
+    // }
 
     // 4. totalSupply
     // if (!tokenInfo.totalSupply) {
