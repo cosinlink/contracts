@@ -1,5 +1,6 @@
 const { getTokenPrice, fetchPoolInfo } = require('./dex.js')
 const { calcPoolTotalTokenValue, calcPoolsTVL } = require('./pool.js')
+const {generateCalls, multiCall} = require('./multicall')
 const log = console.log.bind(console)
 
 const test1 = async () => {
@@ -131,6 +132,20 @@ const test4 = async () => {
 
 }
 
+const testGenerateCalls = async () => {
+    const callObjVec = [{
+            target: '0xa71edc38d189767582c38a3145b5873052c3e47a',
+            instance: await ethers.getContractAt('MdexPair', '0xa71edc38d189767582c38a3145b5873052c3e47a'),
+            functionName: 'balanceOf',
+            params: ['0x0000000000000000000000000000000000000000']
+    }]
+
+    const calls = await generateCalls(callObjVec)
+    const res = await multiCall(calls)
+    log(res)
+    log(ethers.BigNumber.from(res.returnData[0]) / 1e18.toString())
+}
+
 const testMultiCall = async () => {
     const poolInstance = await ethers.getContractAt(
         'NFIUSDTPool',
@@ -145,7 +160,7 @@ const testMultiCall = async () => {
     *    let iface = new ethers.utils.Interface(ABI);
     *    log(`calldata: `, iface.encodeFunctionData("totalSupply"))=
     * */
-    const tx = await poolInstance.populateTransaction.balanceOf('0x92531122B728cbEd7FDA325Ac8690A9681684C04');
+    const tx = await poolInstance.populateTransaction.balanceOf('0x0000000000000000000000000000000000000000');
     const callObj = {
         target: '0x7565a0a69156549c8e1eb2c219458018c3aaf196',  // contract address to call
         callData: tx.data  //
@@ -160,6 +175,7 @@ const main = async () => {
     // await test2()
     // await test3()
     // await test4()
+    await testGenerateCalls()
 }
 
 main()
