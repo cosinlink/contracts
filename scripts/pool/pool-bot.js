@@ -211,8 +211,8 @@ const main = async () => {
             await multiCallGetTotalStaked()
             await sleep(3)
         } catch (e) {
-            log(`----error: ${e}, restart after 20s`)
-            await sleep(20)
+            log(`----error: ${e}, restart after 30s`)
+            await sleep(30)
         }
     }
 }
