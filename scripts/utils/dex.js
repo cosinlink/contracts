@@ -1,3 +1,5 @@
+const {generateCalls, multiCall} = require('./multicall')
+
 
 const getTokenInstance = async (contractAddress) => {
     return await ethers.getContractAt(
