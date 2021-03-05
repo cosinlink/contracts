@@ -1,7 +1,8 @@
 const { fetchTokenInfo } = require('../utils/dex.js')
 const {generateCalls, multiCall} = require('../utils/multicall')
 const {hexToBigNumber} = require('../utils/string')
-const {sleep} = require("../utils/util");
+const {sleep} = require('../utils/util');
+const sendToTg = require('../tg/notification')
 
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -172,7 +173,9 @@ const multiCallGetTotalStaked = async () => {
     const date = new Date(timestamp * 1000)
 
     // log
-    log(`${date.toLocaleString()} | HBO price: ${price.toFixed(2)} | totalStaked: ${ totalStakedString }`)
+    const msg = `${date.toLocaleString()} | HBO price: ${price.toFixed(2)} | totalStaked: ${ totalStakedString }`
+    log(msg)
+    await sendToTg(msg)
     lastStaked = currentStaked
 }
 
@@ -198,7 +201,7 @@ function getDeltaPercentString(lastTVL, tvl) {
     const delta = tvl - lastTVL
     const percent = Math.abs(delta) / lastTVL * 100
     if (delta < 0) {
-        return `!!!!-${ percent.toFixed(4) }%`
+        return `!!!!-*${ percent.toFixed(4) }%*`
     } else if (percent <= 0.0001) {
         return `-`
     }
@@ -213,7 +216,9 @@ const main = async () => {
             await multiCallGetTotalStaked()
             await sleep(3)
         } catch (e) {
-            log(`----error: ${e}, restart after 30s`)
+            const msg = `----error: ${e}, restart after 30s`
+            await sendToTg(msg)
+            log(msg)
             await sleep(30)
         }
     }
