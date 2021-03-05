@@ -199,6 +199,8 @@ function getDeltaPercentString(lastTVL, tvl) {
     const percent = Math.abs(delta) / lastTVL * 100
     if (delta < 0) {
         return `!!!!-${ percent.toFixed(4) }%`
+    } else if (percent <= 0.0001) {
+        return `-`
     }
 
     return `+${ percent.toFixed(4) }%`
