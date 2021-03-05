@@ -1,10 +1,10 @@
-const {deployContract} = require('../utils/util')
+const { deployContract } = require('../utils/util')
 const fs = require('fs')
 
 const main = async () => {
     const instance = await deployContract('Multicall')
     const deployObj = {
-        'Multicall': instance.address
+        Multicall: instance.address,
     }
 
     fs.writeFileSync(
@@ -15,7 +15,7 @@ const main = async () => {
 
 main()
     .then(() => process.exit(0))
-    .catch(error => {
-        console.error(error);
-        process.exit(1);
-    });
+    .catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })

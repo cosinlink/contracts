@@ -1,11 +1,7 @@
-const {generateCalls, multiCall} = require('./multicall')
-
+const { generateCalls, multiCall } = require('./multicall')
 
 const getTokenInstance = async (contractAddress) => {
-    return await ethers.getContractAt(
-        'MdexPair',
-        contractAddress
-    )
+    return await ethers.getContractAt('MdexPair', contractAddress)
 }
 
 const fetchTokenInfo = async (tokenInfo) => {
@@ -55,23 +51,32 @@ const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
     await fetchTokenInfo(usdTokenInfo)
     await fetchTokenInfo(tokenInfo)
 
-    const balanceUsdToken = await usdTokenInfo.instance.callStatic.balanceOf(lpAddress)
-    const balanceToken = await tokenInfo.instance.callStatic.balanceOf(lpAddress)
+    const balanceUsdToken = await usdTokenInfo.instance.callStatic.balanceOf(
+        lpAddress
+    )
+    const balanceToken = await tokenInfo.instance.callStatic.balanceOf(
+        lpAddress
+    )
 
     // should consider decimals
-    const price = (balanceUsdToken / 10**usdTokenInfo.decimals) / (balanceToken / 10**tokenInfo.decimals)
+    const price =
+        balanceUsdToken /
+        10 ** usdTokenInfo.decimals /
+        (balanceToken / 10 ** tokenInfo.decimals)
 
     return {
         price,
         balanceUsdToken,
         balanceToken,
-        lpTotalValue: balanceUsdToken.mul(2)
+        lpTotalValue: balanceUsdToken.mul(2),
     }
 }
 
 const getTokenValueFromLp = async (lpAddress, basicTokenInfo) => {
     await fetchTokenInfo(basicTokenInfo)
-    const balance = await basicTokenInfo.instance.callStatic.balanceOf(lpAddress)
+    const balance = await basicTokenInfo.instance.callStatic.balanceOf(
+        lpAddress
+    )
     return balance.mul(2)
 }
 
@@ -80,5 +85,5 @@ module.exports = {
     fetchTokenInfo,
     getTokenPrice,
     fetchPoolInfo,
-    getTokenValueFromLp
+    getTokenValueFromLp,
 }

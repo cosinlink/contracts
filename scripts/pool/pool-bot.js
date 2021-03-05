@@ -1,12 +1,12 @@
 const { fetchTokenInfo } = require('../utils/dex.js')
-const {generateCalls, multiCall} = require('../utils/multicall')
-const {hexToBigNumber} = require('../utils/string')
-const {sleep} = require('../utils/util');
+const { generateCalls, multiCall } = require('../utils/multicall')
+const { hexToBigNumber } = require('../utils/string')
+const { sleep } = require('../utils/util')
 const sendToTg = require('../tg/notification')
 
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const poolVec = require(__dirname + "/../deploy/deployments/hbo-pools.json")
+const poolVec = require(__dirname + '/../deploy/deployments/hbo-pools.json')
 let lastStaked = {}
 
 const multiCallGetTvl = async () => {
@@ -15,11 +15,11 @@ const multiCallGetTvl = async () => {
     const lpUsdHbo = poolVec[0].tokenAddress
     const hboTokenInfo = {
         address: '0x8764bd4fcc027faf72ba83c0b2028a3bae0d2d57',
-        decimals: 18
+        decimals: 18,
     }
     const usdTokenInfo = {
         address: '0xa71edc38d189767582c38a3145b5873052c3e47a',
-        decimals: 18
+        decimals: 18,
     }
     await fetchTokenInfo(hboTokenInfo)
     await fetchTokenInfo(usdTokenInfo)
@@ -31,7 +31,7 @@ const multiCallGetTvl = async () => {
             target: poolObj.poolAddress,
             instance: await ethers.getContractAt('NFIUSDTPool', ZERO_ADDRESS),
             functionName: 'totalSupply',
-            params: []
+            params: [],
         })
 
         // 2. get lpTotalSupply from lpInstance
@@ -39,7 +39,7 @@ const multiCallGetTvl = async () => {
             target: poolObj.tokenAddress,
             instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
             functionName: 'totalSupply',
-            params: []
+            params: [],
         })
 
         // 3. get the token balance of lpTokenAddress in the tokenInstance
@@ -47,7 +47,7 @@ const multiCallGetTvl = async () => {
             target: hboTokenInfo.address,
             instance: hboTokenInfo.instance,
             functionName: 'balanceOf',
-            params: [poolObj.tokenAddress]
+            params: [poolObj.tokenAddress],
         })
     }
 
@@ -56,16 +56,19 @@ const multiCallGetTvl = async () => {
         target: usdTokenInfo.address,
         instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
         functionName: 'balanceOf',
-        params: [lpUsdHbo]
+        params: [lpUsdHbo],
     })
     callObjVec.push({
         target: hboTokenInfo.address,
         instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
         functionName: 'balanceOf',
-        params: [lpUsdHbo]
+        params: [lpUsdHbo],
     })
 
-    const {returnData} = await multiCall(await generateCalls(callObjVec), true)
+    const { returnData } = await multiCall(
+        await generateCalls(callObjVec),
+        true
+    )
     const returnDataVec = [...returnData]
 
     let sumValue = 0
@@ -80,7 +83,9 @@ const multiCallGetTvl = async () => {
         let TVLByTokenValue
         if (isLp) {
             // should double for lp !!!! don't forget
-            TVLByTokenValue = totalStakedAmount.mul(tokenBalanceOfLpAddress).div(lpTotalSupply)
+            TVLByTokenValue = totalStakedAmount
+                .mul(tokenBalanceOfLpAddress)
+                .div(lpTotalSupply)
             TVLByTokenValue = TVLByTokenValue.mul(2)
         } else {
             // single token pool
@@ -93,13 +98,18 @@ const multiCallGetTvl = async () => {
     // - 2. get price
     const usdtBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
     const tokenBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
-    const price = (usdtBalanceOfLpAddress / 10**usdTokenInfo.decimals) / (tokenBalanceOfLpAddress / 10**hboTokenInfo.decimals)
+    const price =
+        usdtBalanceOfLpAddress /
+        10 ** usdTokenInfo.decimals /
+        (tokenBalanceOfLpAddress / 10 ** hboTokenInfo.decimals)
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
     const tvl = sumValue * price
-    log(`${date.toLocaleString()} | HBO price: ${price.toFixed(2)} | TVL: ${tvl.toFixed(0)} (${ 
-        getDeltaString(lastTVL, tvl)
-    })`)
+    log(
+        `${date.toLocaleString()} | HBO price: ${price.toFixed(
+            2
+        )} | TVL: ${tvl.toFixed(0)} (${getDeltaString(lastTVL, tvl)})`
+    )
     lastTVL = tvl
 }
 
@@ -109,11 +119,11 @@ const multiCallGetTotalStaked = async () => {
     const lpUsdHbo = poolVec[0].tokenAddress
     const hboTokenInfo = {
         address: '0x8764bd4fcc027faf72ba83c0b2028a3bae0d2d57',
-        decimals: 18
+        decimals: 18,
     }
     const usdTokenInfo = {
         address: '0xa71edc38d189767582c38a3145b5873052c3e47a',
-        decimals: 18
+        decimals: 18,
     }
     await fetchTokenInfo(hboTokenInfo)
     await fetchTokenInfo(usdTokenInfo)
@@ -125,7 +135,7 @@ const multiCallGetTotalStaked = async () => {
             target: poolObj.poolAddress,
             instance: await ethers.getContractAt('NFIUSDTPool', ZERO_ADDRESS),
             functionName: 'totalSupply',
-            params: []
+            params: [],
         })
     }
 
@@ -134,46 +144,55 @@ const multiCallGetTotalStaked = async () => {
         target: usdTokenInfo.address,
         instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
         functionName: 'balanceOf',
-        params: [lpUsdHbo]
+        params: [lpUsdHbo],
     })
     callObjVec.push({
         target: hboTokenInfo.address,
         instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
         functionName: 'balanceOf',
-        params: [lpUsdHbo]
+        params: [lpUsdHbo],
     })
 
-    const {returnData} = await multiCall(await generateCalls(callObjVec), true)
+    const { returnData } = await multiCall(
+        await generateCalls(callObjVec),
+        true
+    )
     const returnDataVec = [...returnData]
 
     // ## decode returnData by multicall order
     // - 1. pools
     const currentStaked = {}
-    let totalStakedString = ""
+    let totalStakedString = ''
     for (const { name } of poolVec) {
         const isLp = name.endsWith('LP')
         const totalStakedAmount = hexToBigNumber(returnDataVec.shift())
         currentStaked[name] = totalStakedAmount
-        const deltaString = `${getDeltaPercentString(lastStaked[name], totalStakedAmount)} / `
+        const deltaString = `${getDeltaPercentString(
+            lastStaked[name],
+            totalStakedAmount
+        )} / `
         totalStakedString += deltaString
         if (isLp) {
             // should double for lp !!!! don't forget
-
         } else {
             // single token pool
-
         }
     }
 
     // - 2. get price
     const usdtBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
     const tokenBalanceOfLpAddress = hexToBigNumber(returnDataVec.shift())
-    const price = (usdtBalanceOfLpAddress / 10**usdTokenInfo.decimals) / (tokenBalanceOfLpAddress / 10**hboTokenInfo.decimals)
+    const price =
+        usdtBalanceOfLpAddress /
+        10 ** usdTokenInfo.decimals /
+        (tokenBalanceOfLpAddress / 10 ** hboTokenInfo.decimals)
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
 
     // log
-    const msg = `${date.toLocaleString()} | HBO price: ${price.toFixed(2)} | totalStaked: ${ totalStakedString }`
+    const msg = `${date.toLocaleString()} | HBO price: ${price.toFixed(
+        2
+    )} | totalStaked: ${totalStakedString}`
     log(msg)
     await sendToTg(msg)
     lastStaked = currentStaked
@@ -181,32 +200,32 @@ const multiCallGetTotalStaked = async () => {
 
 function getDeltaString(lastTVL, tvl) {
     if (!lastTVL) {
-        return ""
+        return ''
     }
 
     const delta = tvl - lastTVL
-    const percent = Math.abs(delta) / lastTVL * 100
+    const percent = (Math.abs(delta) / lastTVL) * 100
     if (delta < 0) {
-        return `-${ percent.toFixed(4) }% / ${(delta / 10000).toFixed(4) }W`
+        return `-${percent.toFixed(4)}% / ${(delta / 10000).toFixed(4)}W`
     }
 
-    return `+${ percent.toFixed(4) }% / +${ (delta / 10000).toFixed(4) }W`
+    return `+${percent.toFixed(4)}% / +${(delta / 10000).toFixed(4)}W`
 }
 
 function getDeltaPercentString(lastTVL, tvl) {
     if (!lastTVL) {
-        return ""
+        return ''
     }
 
     const delta = tvl - lastTVL
-    const percent = Math.abs(delta) / lastTVL * 100
+    const percent = (Math.abs(delta) / lastTVL) * 100
     if (delta < 0) {
-        return `!!!!-*${ percent.toFixed(4) }%*`
+        return `!!!!-*${percent.toFixed(4)}%*`
     } else if (percent <= 0.0001) {
         return `-`
     }
 
-    return `+${ percent.toFixed(4) }%`
+    return `+${percent.toFixed(4)}%`
 }
 
 const main = async () => {
@@ -226,8 +245,7 @@ const main = async () => {
 
 main()
     .then(() => process.exit(0))
-    .catch(error => {
-        console.error(error);
-        process.exit(1);
-    });
-
+    .catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })
