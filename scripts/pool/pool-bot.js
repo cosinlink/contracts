@@ -1,7 +1,7 @@
 const { fetchTokenInfo } = require('../utils/dex.js')
 const { generateCalls, multiCall } = require('../utils/multicall')
 const { hexToBigNumber } = require('../utils/string')
-const { sleep } = require('../utils/util')
+const { sleep, dateFormat } = require('../utils/util')
 const sendToTg = require('../tg/notification')
 
 const log = console.log.bind(console)
@@ -188,9 +188,9 @@ const multiCallGetTotalStaked = async () => {
         (tokenBalanceOfLpAddress / 10 ** hboTokenInfo.decimals)
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
-
+    const fmt = "YYYY-mm-dd HH:MM:SS"
     // log
-    const msg = `${date.toLocaleString()} | HBO price: ${price.toFixed(
+    const msg = `${dateFormat(fmt, date)} | HBO price: ${price.toFixed(
         2
     )} | totalStaked: ${totalStakedString}`
     log(msg)
