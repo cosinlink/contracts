@@ -188,7 +188,7 @@ const multiCallGetTotalStaked = async () => {
         (tokenBalanceOfLpAddress / 10 ** hboTokenInfo.decimals)
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
-    const fmt = "YYYY-mm-dd HH:MM:SS"
+    const fmt = 'YYYY-mm-dd HH:MM:SS'
     // log
     const msg = `${dateFormat(fmt, date)} | HBO price: ${price.toFixed(
         2
