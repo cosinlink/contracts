@@ -250,9 +250,9 @@ const main = async () => {
     // await test1()
     // await test2()
     // await test3()
-    // await test4()
+    await test4()
     // await testGenerateCalls()
-    await multiCallGetTvl()
+    // await multiCallGetTvl()
 }
 
 main()

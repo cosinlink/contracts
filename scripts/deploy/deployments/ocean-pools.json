@@ -1,0 +1,22 @@
+[
+  {
+    "name": "ODT-USDT-LP",
+    "tokenAddress": "0x68a9b0678111796524E98020400a50a8C734649c",
+    "poolAddress": "0xcc3de43fe2376D550Acb139C17a9f2344BA77AaC"
+  },
+  {
+    "name": "ODT-HBTC-LP",
+    "tokenAddress": "0x909068819c45c117a2eEb4bbe329b803D62D1f45",
+    "poolAddress": "0xD5D1D9Bd3CF0e0c61955B0291b346240Fd53e4e3"
+  },
+  {
+    "name": "ODT-HT-LP",
+    "tokenAddress": "0x33d1F9A3f703648eae172C7Fa8BA7aC34C32356D",
+    "poolAddress": "0x8aecB96B6A93d4e338158055c7E66dd261B3950F"
+  },
+  {
+    "name": "ODT",
+    "tokenAddress": "0x991075Cc14A91Fe001528943B3EB6DF31CfF431F",
+    "poolAddress": "0x7B27D8e0C819aa10CbDF53CB0f5Fe53C3df7bA63"
+  }
+]
