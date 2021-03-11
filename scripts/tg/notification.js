@@ -1,15 +1,21 @@
 const { TelegramClient } = require('messaging-api-telegram')
 require('dotenv').config()
 
-module.exports = async (text) => {
+module.exports = async (text, tgGroupName) => {
     const config = process.env
     if (!config.TELEGRAM_BOT_KEY) {
         throw new Error('cannot find TELEGRAM_BOT_KEY config')
     }
 
-    const chat_id = config.DEV
-        ? config.TELEGRAM_CHANNEL_ID
-        : config.TELEGRAM_INTERNAL_GROUP
+    let chat_id
+    if (!tgGroupName) {
+        chat_id = config.DEV
+            ? config.TELEGRAM_CHANNEL_ID
+            : config.TELEGRAM_INTERNAL_GROUP
+    } else {
+        chat_id = config[tgGroupName]
+    }
+
     const client = new TelegramClient({
         accessToken: config.TELEGRAM_BOT_KEY,
     })

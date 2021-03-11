@@ -26,6 +26,12 @@ module.exports = {
         mnemonic: `${process.env.HECO_DEPLOYER_MNEMONIC}`
       },
     },
+    'heco-lottery': {
+      url: `${process.env.HECO_API}`,
+      accounts: {
+        mnemonic: `${process.env.HECO_LOTTERY_DEPLOYER_MNEMONIC}`
+      },
+    },
     'heco-test': {
       url: `${process.env.HECO_TEST_API}`,
       accounts: {

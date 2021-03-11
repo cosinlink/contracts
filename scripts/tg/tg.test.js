@@ -1,7 +1,7 @@
 const sendTgMsg = require('./notification')
 
 const main = async () => {
-    await sendTgMsg('*test*')
+    await sendTgMsg('*test*', 'ODT_LOTTERY_MONITOR')
 }
 
 main()
