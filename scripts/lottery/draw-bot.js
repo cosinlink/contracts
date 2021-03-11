@@ -6,7 +6,7 @@ const log = console.log.bind(console)
 // 1 hour = 3600s
 // const drawInterval = 3600
 const drawInterval = 300 // 5 min
-const lotteryContractAddress = '0xf719E21cF43457086A87Ec19E5A8A560970bB6b0'
+const lotteryContractAddress = '0x705de7220CD56E75D080df9ad2F88B94051Fb5AD'
 let lottery
 
 const sendToODTLotteryMonitor = async (msg) => {
