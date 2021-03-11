@@ -4,10 +4,12 @@ const lotteryInfo = require('./Lottery.json')
 const log = console.log.bind(console)
 
 // 1 hour = 3600s
-const drawInterval = 3600 - 10
+// const drawInterval = 3600 - 10
+const drawInterval = 3600 * 3 - 10
 // const drawInterval = 300 // 5 min
 // const lotteryContractAddress = '0x705de7220CD56E75D080df9ad2F88B94051Fb5AD'
-const lotteryContractAddress = '0xB4dBa35b926Dd3D1155618142d754dB5a3Ba5efc'
+// const lotteryContractAddress = '0xB4dBa35b926Dd3D1155618142d754dB5a3Ba5efc'
+const lotteryContractAddress = '0xfDF9b7Fe20c0D8a7aD8A8aa2C422BCEBc0cE8360'
 let lottery
 
 const sendToODTLotteryMonitor = async (msg) => {
@@ -32,9 +34,6 @@ const enterDraw = async () => {
     // 1. enterDrawingPhase
     tx = await lottery.enterDrawingPhase()
     receipt = await tx.wait(1)
-    msg = `enterDrawingPhase, receipt.transactionHash: ${receipt.transactionHash},  status: ${receipt.status}`
-    log(msg)
-    await sendToODTLotteryMonitor(msg)
 }
 
 const drawed = async () => {
@@ -43,9 +42,6 @@ const drawed = async () => {
     // 2. drawed, random 123
     tx = await lottery.drawing(123)
     receipt = await tx.wait(1)
-    msg = `drawed, receipt.transactionHash: ${receipt.transactionHash},  status: ${receipt.status}`
-    log(msg)
-    await sendToODTLotteryMonitor(msg)
 }
 
 const reset = async () => {
@@ -54,9 +50,6 @@ const reset = async () => {
     // 3.
     tx = await lottery.reset()
     receipt = await tx.wait(1)
-    msg = `reset, receipt.transactionHash: ${receipt.transactionHash},  status: ${receipt.status}`
-    log(msg)
-    await sendToODTLotteryMonitor(msg)
 }
 
 const main = async () => {
@@ -71,7 +64,6 @@ const main = async () => {
                 break
             } catch (e) {
                 const msg = `!!!!!enterDraw error: ${e}, restart after 30s`
-                await sendToODTLotteryMonitor(msg)
                 log(msg)
                 await sleep(30)
             }
@@ -83,7 +75,6 @@ const main = async () => {
                 break
             } catch (e) {
                 const msg = `!!!!!drawed error: ${e}, restart after 30s`
-                await sendToODTLotteryMonitor(msg)
                 log(msg)
                 await sleep(30)
             }
@@ -95,13 +86,13 @@ const main = async () => {
                 break
             } catch (e) {
                 const msg = `!!!!!reset error: ${e}, restart after 30s`
-                await sendToODTLotteryMonitor(msg)
                 log(msg)
                 await sleep(30)
             }
         }
 
-        const msg = `-----------sleep ${drawInterval} seconds, waiting for next round-----------`
+        let msg = `-----------1.enterDrawingPhase, 2.drawed, 3.reset success!
+sleep ${drawInterval} seconds, waiting for next round-----------`
         log(msg)
         await sendToODTLotteryMonitor(msg)
         await sleep(drawInterval)
