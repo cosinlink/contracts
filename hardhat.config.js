@@ -38,6 +38,12 @@ module.exports = {
         mnemonic: `${process.env.HECO_TEST_DEPLOYER_MNEMONIC}`
       },
     },
+    'heco-wool': {
+      url: `${process.env.HECO_API}`,
+      accounts: {
+        mnemonic: `${process.env.HECO_USDT_DEPLOYER_MNEMONIC}`
+      },
+    },
   },
   solidity: {
     compilers: [
