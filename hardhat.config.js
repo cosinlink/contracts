@@ -20,30 +20,6 @@ task("accounts", "Prints the list of accounts", async () => {
 module.exports = {
   networks: {
     hardhat: {},
-    'heco': {
-      url: `${process.env.HECO_API}`,
-      accounts: {
-        mnemonic: `${process.env.HECO_DEPLOYER_MNEMONIC}`
-      },
-    },
-    'heco-lottery': {
-      url: `${process.env.HECO_API}`,
-      accounts: {
-        mnemonic: `${process.env.HECO_LOTTERY_DEPLOYER_MNEMONIC}`
-      },
-    },
-    'heco-test': {
-      url: `${process.env.HECO_TEST_API}`,
-      accounts: {
-        mnemonic: `${process.env.HECO_TEST_DEPLOYER_MNEMONIC}`
-      },
-    },
-    'heco-wool': {
-      url: `${process.env.HECO_API}`,
-      accounts: {
-        mnemonic: `${process.env.HECO_USDT_DEPLOYER_MNEMONIC}`
-      },
-    },
   },
   solidity: {
     compilers: [
