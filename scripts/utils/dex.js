@@ -60,7 +60,8 @@ const getTokenPrice = async (lpAddress, usdTokenInfo, tokenInfo) => {
 
     // should consider decimals
     const price =
-        (balanceUsdToken / 10 ** usdTokenInfo.decimals) /
+        balanceUsdToken /
+        10 ** usdTokenInfo.decimals /
         (balanceToken / 10 ** tokenInfo.decimals)
 
     return {
@@ -79,7 +80,11 @@ const getTokenValueFromLp = async (lpAddress, basicTokenInfo) => {
     return balance.mul(2)
 }
 
-const getTokenValueFromLpAmount = async (lpTokenInfo, basicTokenInfo, lpAmount) => {
+const getTokenValueFromLpAmount = async (
+    lpTokenInfo,
+    basicTokenInfo,
+    lpAmount
+) => {
     await fetchTokenInfo(basicTokenInfo)
     await fetchTokenInfo(lpTokenInfo)
 
@@ -89,7 +94,7 @@ const getTokenValueFromLpAmount = async (lpTokenInfo, basicTokenInfo, lpAmount) 
     const lpTotalValue = balance.mul(2)
     const lpTotalSupply = await lpTokenInfo.instance.totalSupply()
 
-    return lpAmount / lpTotalSupply * lpTotalValue
+    return (lpAmount / lpTotalSupply) * lpTotalValue
 }
 
 module.exports = {

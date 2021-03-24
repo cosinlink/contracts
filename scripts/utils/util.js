@@ -24,6 +24,11 @@ const waitingForReceipt = async (provider, res) => {
 
 const deployContract = async (factoryPath, ...args) => {
     const factory = await ethers.getContractFactory(factoryPath)
+
+    // for godwoken
+    const tx = factory.getDeployTransaction(...args)
+    const calldata = tx.data
+
     const contract = await factory.deploy(...args)
     await contract.deployTransaction.wait(1)
     return contract
