@@ -1,12 +1,14 @@
 const log = console.log.bind(console)
 const fs = require('fs')
-const { fetchTokenInfo } = require('./utils/dex')
-const { deployContract } = require('./utils/util')
-const { MaxUint256 } = ethers.constants
+const {fetchTokenInfo} = require('./utils/dex')
+const {deployContract} = require('./utils/util')
+const {MaxUint256} = ethers.constants
 
 // all deployed contracts
 let contracts
 let adminAddress
+let calldataVec = []
+
 
 /*
  * @dev example
@@ -21,6 +23,10 @@ const generateCallData = async (instance, functionName, params) => {
 
 const deployUniswapContracts = async () => {
     const wethInstance = await deployContract('WETH')
+    calldataVec.push({
+        calldata: wethInstance.deployTransaction.data,
+        name: 'WETH'
+    })
     // log('wethInstance.deployTransaction.data: ', wethInstance.deployTransaction.data)
 
     const factoryInstance = await deployContract(
@@ -28,16 +34,46 @@ const deployUniswapContracts = async () => {
         '0x0000000000000000000000000000000000000000'
     )
     // log('factoryInstance.deployTransaction.data: ', factoryInstance.deployTransaction.data)
+    calldataVec.push({
+        name: 'Factory',
+        calldata: factoryInstance.deployTransaction.data
+    })
 
+
+    /*
     const routerInstance = await deployContract(
         'MdexRouter',
         factoryInstance.address,
         wethInstance.address
     )
+    */
     // log('routerInstance.deployTransaction.data: ', routerInstance.deployTransaction.data)
 
+    // for godwoken, id 5 => '0x0500000000000000000000000000000000000000'
+    const routerInstance = await deployContract(
+        'MdexRouter',
+        '0x0600000000000000000000000000000000000000',
+        '0x0500000000000000000000000000000000000000'
+    )
+    calldataVec.push({
+        name: 'Router',
+        calldata: routerInstance.deployTransaction.data
+    })
+
+
     const MockUsdt = await deployContract('MockUSDT')
+    // log('MockUsdt.deployTransaction.data: ', MockUsdt.deployTransaction.data)
+    calldataVec.push({
+        name: 'MockUsdt',
+        calldata: MockUsdt.deployTransaction.data
+    })
+
     const MockBTC = await deployContract('MockBTC')
+    // log('MockBTC.deployTransaction.data: ', MockBTC.deployTransaction.data)
+    calldataVec.push({
+        name: 'MockBTC',
+        calldata: MockBTC.deployTransaction.data
+    })
 
     const pairAddress = factoryInstance.callStatic.pairFor(
         MockBTC.address,
@@ -80,30 +116,35 @@ const addLiquidity = async () => {
     const btcAmount = unit.mul(2)
     const deadline = ethers.constants.MaxUint256
 
-/*
-    const calldata = await generateCallData(router, 'addLiquidity', [
-        contracts.MockBTC.address,
-        contracts.MockUsdt.address,
-        btcAmount,
-        usdtAmount,
-        btcAmount,
-        usdtAmount,
-        adminAddress,
-        deadline,
-    ])
-*/
 
-    const tx = await router.addLiquidity(
-        contracts.MockBTC.address,
-        contracts.MockUsdt.address,
-        btcAmount,
-        usdtAmount,
-        btcAmount,
-        usdtAmount,
-        adminAddress,
-        deadline
-    )
-    await tx.wait(1)
+        const calldata = await generateCallData(router, 'addLiquidity', [
+            '0x0900000000000000000000000000000000000000',
+            '0x0800000000000000000000000000000000000000',
+            btcAmount,
+            usdtAmount,
+            btcAmount,
+            usdtAmount,
+            "0x0200000000000000000000000000000000000000",
+            deadline,
+        ])
+        calldataVec.push({
+            name: "addLiquidity, btc-2,  usdt-1000",
+            calldata: calldata,
+        })
+
+
+    const tx = {}
+    // const tx = await router.addLiquidity(
+    //     contracts.MockBTC.address,
+    //     contracts.MockUsdt.address,
+    //     btcAmount,
+    //     usdtAmount,
+    //     btcAmount,
+    //     usdtAmount,
+    //     adminAddress,
+    //     deadline
+    // )
+    // await tx.wait(1)
 
     return tx
 }
@@ -162,32 +203,117 @@ const main = async () => {
     contracts = await deployUniswapContracts()
 
     // 2. approve tokenA and tokenB amounts from user to router
-    const { MockBTC, MockUsdt, routerInstance } = contracts
+/*
+    const {MockBTC, MockUsdt, routerInstance} = contracts
     tx = await MockBTC.approve(routerInstance.address, MaxUint256)
     await tx.wait(1)
     tx = await MockUsdt.approve(routerInstance.address, MaxUint256)
     await tx.wait(1)
+    */
+    // for godwoken, router account id :7 => '0x0700000000000000000000000000000000000000'
+    const {MockBTC, MockUsdt, routerInstance} = contracts
+
+    calldataVec.push({
+        name: 'user approve router, MockBTC, MaxUint256',
+        calldata: await generateCallData(
+            MockBTC,
+            'approve',
+            ['0x0700000000000000000000000000000000000000', MaxUint256]
+        )
+    })
+    tx = await MockBTC.approve('0x0700000000000000000000000000000000000000', MaxUint256)
+    await tx.wait(1)
+
+    calldataVec.push({
+        name: 'user approve router, MockUsdt, MaxUint256',
+        calldata: await generateCallData(
+            MockUsdt,
+            'approve',
+            ['0x0700000000000000000000000000000000000000', MaxUint256]
+        )
+    })
+    tx = await MockUsdt.approve('0x0700000000000000000000000000000000000000', MaxUint256)
+    await tx.wait(1)
+
 
     // 3. addLiquidity
     tx = await addLiquidity()
 
+    calldataVec.push({
+        name: 'user approve router, MockUsdt, MaxUint256',
+        calldata: await generateCallData(
+            MockUsdt,
+            'approve',
+            ['0x0700000000000000000000000000000000000000', MaxUint256]
+        )
+    })
+
+    calldataVec.push({
+        index: calldataVec.length,
+        name: 'user approve user',
+        calldata: await generateCallData(
+            MockUsdt,
+            'approve',
+            ['0x0200000000000000000000000000000000000000', MaxUint256]
+        )
+    })
+
+    calldataVec.push({
+        index: calldataVec.length,
+        name: 'user transferFrom to router',
+        calldata: await generateCallData(
+            MockUsdt,
+            'transferFrom',
+            ['0x0200000000000000000000000000000000000000', '0x0700000000000000000000000000000000000000', 999]
+        )
+    })
+
+
+    // balanceOf
+    calldataVec.push({
+        index: calldataVec.length,
+        name: 'balanceOf',
+        calldata: await generateCallData(
+            MockUsdt,
+            'balanceOf',
+            ['0x0200000000000000000000000000000000000000']
+        )
+    })
+
+    calldataVec.push({
+        index: calldataVec.length,
+        name: 'balanceOf',
+        calldata: await generateCallData(
+            MockUsdt,
+            'balanceOf',
+            ['0x0700000000000000000000000000000000000000']
+        )
+    })
+
+
     // 4. swap
-    tx = await swapToken()
+    // tx = await swapToken()
 
     // 5. approve lp amount from user to router
-    const pairAddress = await pairForTokens(
-        contracts.MockBTC.address,
-        contracts.MockUsdt.address
-    )
-    const tokenInfo = await fetchTokenInfo({
-        address: pairAddress,
-    })
-    const lpAmount = await tokenInfo.instance.callStatic.balanceOf(adminAddress)
-    tx = await tokenInfo.instance.approve(routerInstance.address, lpAmount)
-    await tx.wait(1)
+    // const pairAddress = await pairForTokens(
+    //     contracts.MockBTC.address,
+    //     contracts.MockUsdt.address
+    // )
+    // const tokenInfo = await fetchTokenInfo({
+    //     address: pairAddress,
+    // })
+    // const lpAmount = await tokenInfo.instance.callStatic.balanceOf(adminAddress)
+    // tx = await tokenInfo.instance.approve(routerInstance.address, lpAmount)
+    // await tx.wait(1)
+    //
+    // // 6. removeLiquidity
+    // tx = await removeLiquidity()
 
-    // 6. removeLiquidity
-    tx = await removeLiquidity()
+
+    fs.writeFileSync(
+        '/Users/hyz/RustProjects/godwoken-uniswap-example' + '/' + '1.calldata.json',
+        JSON.stringify(calldataVec, null, 2)
+    )
 }
 
 main()
