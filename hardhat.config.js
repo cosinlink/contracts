@@ -44,6 +44,18 @@ module.exports = {
         mnemonic: `${process.env.HECO_USDT_DEPLOYER_MNEMONIC}`
       },
     },
+    'bsc': {
+      url: `${process.env.BSC_API}`,
+      accounts: {
+        mnemonic: `${process.env.HECO_USDT_DEPLOYER_MNEMONIC}`
+      },
+    },
+    'bsc-main-test': {
+      url: `${process.env.BSC_API}`,
+      accounts: {
+        mnemonic: `${process.env.BSC_TEST_MNEMONIC}`
+      },
+    }
   },
   solidity: {
     compilers: [

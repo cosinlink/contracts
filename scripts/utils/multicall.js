@@ -23,7 +23,6 @@ const generateCalls = async (callObjVec) => {
     }
     return calls
 }
-
 /*
 * @dev
 * const tx = await poolInstance.populateTransaction.totalSupply();
