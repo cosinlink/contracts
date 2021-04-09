@@ -14,7 +14,8 @@ async function main() {
         poolAddress
     )
 
-    const {amount} = await poolInstance.callStatic.userInfo(lpPoolPid, userAddress)
+    // const {amount} = await poolInstance.callStatic.userInfo(lpPoolPid, userAddress)
+    const amount = 37272.709875 * 1e18
 
     const value = await getTokenValueFromLpAmount(
         {

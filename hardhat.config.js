@@ -55,6 +55,12 @@ module.exports = {
       accounts: {
         mnemonic: `${process.env.BSC_TEST_MNEMONIC}`
       },
+    },
+    'heco-airdrop-rdtk': {
+      url: `${process.env.HECO_API}`,
+      accounts: {
+        mnemonic: `${process.env.HECO_AIRDROP_RDTK_DEPLOYER_MNEMONIC}`
+      },
     }
   },
   solidity: {
