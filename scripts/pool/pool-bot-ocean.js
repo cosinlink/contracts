@@ -8,6 +8,7 @@ const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const poolVec = require(__dirname + '/../deploy/deployments/ocean-pools.json')
 let lastStaked = {}
+const WATCH_INTERVAL_SECONDS = 20
 
 const multiCallGetTvl = async () => {
     const callObjVec = []
@@ -233,7 +234,7 @@ const main = async () => {
         try {
             // await multiCallGetTvl()
             await multiCallGetTotalStaked()
-            await sleep(3)
+            await sleep(WATCH_INTERVAL_SECONDS)
         } catch (e) {
             const msg = `----error: ${e}, restart after 30s`
             await sendToTg(msg)
