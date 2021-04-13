@@ -11,7 +11,7 @@ const drawInterval = 3600 * 3 - 10
 // const lotteryContractAddress = '0xB4dBa35b926Dd3D1155618142d754dB5a3Ba5efc'
 // const lotteryContractAddress = '0xfDF9b7Fe20c0D8a7aD8A8aa2C422BCEBc0cE8360'
 // v2
-const lotteryContractAddress = '0x274dd92aeE8A567C9650aa099830dBb635996966'
+const lotteryContractAddress = '0xD398808f5370bBcCe3ADB5B68a3B2718F3454384'
 let lottery
 
 const sendToODTLotteryMonitor = async (msg) => {
