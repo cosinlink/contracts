@@ -1,6 +1,6 @@
 const { getTokenPrice, fetchPoolInfo, fetchTokenInfo } = require('./dex.js')
 const { calcPoolTotalTokenValue, calcPoolsTVL } = require('./pool.js')
-const { generateCalls, multiCall } = require('./multicall')
+const { generateCalls, multiCall, HecoMulticallAddress } = require('./multicall')
 const { hexToBigNumber } = require('./string')
 
 const log = console.log.bind(console)
@@ -116,7 +116,7 @@ const testGenerateCalls = async () => {
     ]
 
     const calls = await generateCalls(callObjVec)
-    const res = await multiCall(calls)
+    const res = await multiCall(calls, HecoMulticallAddress)
     log(res)
     log(ethers.BigNumber.from(res.returnData[0]) / (1e18).toString())
 }
@@ -143,7 +143,7 @@ const testMultiCall = async () => {
         callData: tx.data, //
     }
 
-    let res = await multiCall([callObj])
+    let res = await multiCall([callObj], HecoMulticallAddress)
     log(ethers.BigNumber.from(res.returnData[0]) / (1e18).toString())
 }
 
@@ -205,6 +205,7 @@ const multiCallGetTvl = async () => {
 
     const { returnData } = await multiCall(
         await generateCalls(callObjVec),
+        HecoMulticallAddress,
         true
     )
     const returnDataVec = [...returnData]

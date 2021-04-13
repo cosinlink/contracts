@@ -1,5 +1,5 @@
 const { fetchTokenInfo } = require('../utils/dex.js')
-const { generateCalls, multiCall } = require('../utils/multicall')
+const { generateCalls, multiCall, HecoMulticallAddress } = require('../utils/multicall')
 const { hexToBigNumber } = require('../utils/string')
 const { sleep, dateFormat } = require('../utils/util')
 const sendToTg = require('../tg/notification')
@@ -68,6 +68,7 @@ const multiCallGetTvl = async () => {
 
     const { returnData } = await multiCall(
         await generateCalls(callObjVec),
+        HecoMulticallAddress,
         true
     )
     const returnDataVec = [...returnData]
@@ -156,6 +157,7 @@ const multiCallGetTotalStaked = async () => {
 
     const { returnData } = await multiCall(
         await generateCalls(callObjVec),
+        HecoMulticallAddress,
         true
     )
     const returnDataVec = [...returnData]

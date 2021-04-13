@@ -1,5 +1,6 @@
 let multicallInstance
-const MulticallAddress = '0x5F6C56Ae1546A7371d529D5620D5Ff6c07394AfE'
+const HecoMulticallAddress = '0x5F6C56Ae1546A7371d529D5620D5Ff6c07394AfE'
+const BSCMulticallAddress = '0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb'
 
 /*
  * @param callObjVev
@@ -33,17 +34,17 @@ const generateCalls = async (callObjVec) => {
 *   }
 * ]
 * */
-const multiCall = async (calls, isRequestBlockTime = true) => {
+const multiCall = async (calls, multicallAddress, isRequestBlockTime = true) => {
     if (!multicallInstance) {
         multicallInstance = await ethers.getContractAt(
             'Multicall',
-            MulticallAddress
+            multicallAddress
         )
     }
 
     if (isRequestBlockTime) {
         calls.push({
-            target: MulticallAddress,
+            target: multicallAddress,
             callData: (
                 await multicallInstance.populateTransaction.getCurrentBlockTimestamp()
             ).data,
@@ -57,14 +58,15 @@ const getBlockTimestamp = async () => {
     if (!multicallInstance) {
         multicallInstance = await ethers.getContractAt(
             'Multicall',
-            MulticallAddress
+            HecoMulticallAddress
         )
     }
     return await multicallInstance.callStatic.getCurrentBlockTimestamp()
 }
 
 module.exports = {
-    MulticallAddress,
+    HecoMulticallAddress,
+    BSCMulticallAddress,
     generateCalls,
     multiCall,
 }
