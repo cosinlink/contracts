@@ -5,7 +5,7 @@ const log = console.log.bind(console)
 
 // 1 hour = 3600s
 // const drawInterval = 3600 - 10
-const drawInterval = 3600 * 6 - 10
+const drawInterval = 3600 * 3 - 10
 // const drawInterval = 300 // 5 min
 // const lotteryContractAddress = '0x705de7220CD56E75D080df9ad2F88B94051Fb5AD'
 // const lotteryContractAddress = '0xB4dBa35b926Dd3D1155618142d754dB5a3Ba5efc'
@@ -30,37 +30,18 @@ const init = async () => {
     )
 }
 
-const oneClickDraw = async () => {
-    let tx, receipt, msg
-
-    // 1. enterDrawingPhase
-    tx = await lottery.oneClickDraw(123)
-    receipt = await tx.wait(1)
-}
-
 const main = async () => {
     // 1. get lottery contract interface
     // 2. set lotteryOperator
     await init()
 
-    while (1) {
-        while (1) {
-            try {
-                await oneClickDraw()
-                break
-            } catch (e) {
-                const msg = `!!!!!oneClickDraw error: ${e}, restart after 30s`
-                log(msg)
-                await sleep(30)
-            }
-        }
+    const tx = await lottery.changeClaimFee(ethers.utils.parseEther('0.02'));
+    await tx.wait(1)
 
-        let msg = `----------- oneClickDraw success!
-sleep ${drawInterval} seconds, waiting for next round-----------`
-        log(msg)
-        await sendToODTLotteryMonitor(msg)
-        await sleep(drawInterval)
-    }
+    let msg = `----------- change fee to 0.02 -----------`
+    log(msg)
+    await sendToODTLotteryMonitor(msg)
+    await sleep(drawInterval)
 }
 
 main()
