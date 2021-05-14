@@ -7,7 +7,7 @@ const sendToTg = require('../tg/notification')
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 let lastPrice = {}
-const IntervalTimes = 5
+const IntervalTimes = 12
 let currentInterval = 0
 
 // pancake
