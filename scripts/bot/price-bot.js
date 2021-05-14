@@ -7,6 +7,8 @@ const sendToTg = require('../tg/notification')
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 let lastPrice = {}
+const IntervalTimes = 5
+let currentInterval = 0
 
 // pancake
 
@@ -95,11 +97,28 @@ const multiCallGetTotalStaked = async () => {
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
     const fmt = 'YYYY-mm-dd HH:MM:SS'
-    // log
 
+    let percentString = ''
+    if (lastPrice) {
+        const delta = price - lastPrice
+        const percent = (Math.abs(delta) / lastPrice) * 100
+        if (percent < 1 && currentInterval < IntervalTimes) {
+            currentInterval++
+            return
+        }
+        currentInterval = 0
+
+        if (delta < 0) {
+            percentString = `-${percent.toFixed(4)}%`
+        } else {
+            percentString = `+${percent.toFixed(4)}%`
+        }
+    }
+
+    // log
     const msg = `${dateFormat(fmt, date)} | SHIBSC-BUSD price: ${price.toFixed(
         11
-    )}`
+    )} | ${percentString}`
     log(msg)
     await sendToTg(msg)
     lastPrice = price
