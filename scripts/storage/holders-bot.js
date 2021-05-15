@@ -1,15 +1,16 @@
-const {fetchTokenInfo} = require('../utils/dex.js')
-const {generateCalls, multiCall, BSCMulticallAddress} = require('../utils/multicall')
-const {hexToBigNumber} = require('../utils/string')
 const {sleep, dateFormat} = require('../utils/util')
 const sendToTg = require('../tg/notification')
 const axios = require('axios');
 
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-let lastPrice = {}
-const Interval_Seconds = 30
-let currentInterval = 0
+
+// 20 minutes
+const Interval_Seconds = 20 * 60
+
+// 30s
+const Interval_Seconds_Error = 30
+
 let storage, lastHolders
 
 // pancake
@@ -38,6 +39,7 @@ const init = async () => {
         'SimpleStorage',
         '0x342DC0f976247570550B70372e5b43D4fB5Cb71e'
     )
+    lastHolders = 0
 }
 
 
@@ -70,8 +72,10 @@ const main = async () => {
             const holders = await getHoldersFromBSCScan()
             if (holders) {
                 log(`holders`, holders)
-                await setHoldersToStorage(holders)
-                log(`setHoldersToStorage success`)
+                if (holders > lastHolders) {
+                    await setHoldersToStorage(holders)
+                    log(`setHoldersToStorage success`)
+                }
                 await sendToTg(`Holders: ${holders}`)
             } else {
                 log("request to BSCScan error")
@@ -79,10 +83,10 @@ const main = async () => {
             }
             await sleep(Interval_Seconds)
         } catch (e) {
-            const msg = `----error: ${e}, restart after 30s`
+            const msg = `----error: ${e}, restart after 60s`
             await sendToTg(msg)
             log(msg)
-            await sleep(Interval_Seconds)
+            await sleep(Interval_Seconds_Error)
         }
     }
 }
