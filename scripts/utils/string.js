@@ -15,6 +15,9 @@ const clear0x = (hexStr) => {
 }
 
 const hexToBigNumber = (hexStr) => {
+    if (hexStr === '0x') {
+        hexStr = '0x0'
+    }
     return ethers.BigNumber.from(hexStr)
 }
 

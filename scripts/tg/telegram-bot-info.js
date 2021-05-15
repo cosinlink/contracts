@@ -8,7 +8,7 @@ function getTgInfo() {
         accessToken: config.TELEGRAM_BOT_KEY,
     }
     const client = new TelegramClient(tgConfig)
-    client.getUpdates({ limit: 10 }).then((text) => {
+    client.getUpdates({ limit: 5}).then((text) => {
         text.map((obj) => {
             console.log(obj)
         })
