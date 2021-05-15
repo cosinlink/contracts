@@ -9,7 +9,7 @@ const readline = require('readline');
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 let lastPrice = {}
-const Interval_Seconds = 30
+const Interval_Seconds = 120
 const SCOUT_ADDRESS = '0x1e2b7ae4f142fe8364114bdf6ffee18b1effe595'
 let last_scout_balance = 0
 
