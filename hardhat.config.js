@@ -55,6 +55,7 @@ module.exports = {
       accounts: {
         mnemonic: `${process.env.BSC_STORAGE_MNEMONIC}`
       },
+      gasMultiplier: 1.3,
     },
     'bsc-main-test': {
       url: `${process.env.BSC_API}`,
