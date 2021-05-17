@@ -123,14 +123,6 @@ contract ERC20 is Context, IERC20 {
         return true;
     }
 
-    function addWhitelist(address user) public {
-        whitelist[user] = true;
-    }
-
-    function removeWhitelist(address user) public {
-        whitelist[user] = false;
-    }
-
     /**
      * @dev See {IERC20-allowance}.
      */

@@ -22,4 +22,12 @@ contract DogToken is ERC20("Dog Token", "Dog"){
         require(msg.sender == minter, "caller is not the minter");
         _;
     }
+
+    function addWhitelist(address user) public onlyMinter {
+        whitelist[user] = true;
+    }
+
+    function removeWhitelist(address user) public onlyMinter {
+        whitelist[user] = false;
+    }
 }
