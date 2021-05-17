@@ -71,7 +71,7 @@ const main = async () => {
         try {
             const holders = await getHoldersFromBSCScan()
             if (holders) {
-                log(`holders`, holders)
+                log(`holders`, holders, 'lastHolders: ', lastHolders)
                 if (holders > lastHolders) {
                     await setHoldersToStorage(holders)
                     log(`setHoldersToStorage success`)
