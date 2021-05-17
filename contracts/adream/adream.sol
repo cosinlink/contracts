@@ -956,7 +956,7 @@ contract ADREAM is Context, IERC20, Ownable {
         return (rSupply, tSupply);
     }
 
-    function _takeLiquidity(uint256 tLiquidity) private {
+    function _takeLiquidity(uint256 tLiquidity) private  {
         uint256 currentRate =  _getRate();
         uint256 rLiquidity = tLiquidity.mul(currentRate);
         _rOwned[address(this)] = _rOwned[address(this)].add(rLiquidity);
