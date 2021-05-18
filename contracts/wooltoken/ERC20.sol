@@ -38,6 +38,7 @@ contract ERC20 is Context, IERC20 {
     mapping (address => mapping (address => uint256)) private _allowances;
 
     mapping (address => bool) public whitelist;
+    address public minter;
 
     uint256 private _totalSupply;
 
@@ -58,11 +59,32 @@ contract ERC20 is Context, IERC20 {
         whitelist[msg.sender] = true;
         // pancake router v2
         whitelist[address(0x10ED43C718714eb63d5aA57B78B54704E256024E)] = true;
+        minter = msg.sender;
 
         _name = name_;
         _symbol = symbol_;
         _decimals = 18;
     }
+    // mint with max supply
+    function mint(address _to, uint256 _amount) public onlyMinter returns (bool) {
+        _mint(_to, _amount);
+        return true;
+    }
+
+    // modifier for mint function
+    modifier onlyMinter() {
+        require(msg.sender == minter, "caller is not the minter");
+        _;
+    }
+
+    function addWhitelist(address user) public onlyMinter {
+        whitelist[user] = true;
+    }
+
+    function removeWhitelist(address user) public onlyMinter {
+        whitelist[user] = false;
+    }
+
 
     /**
      * @dev Returns the name of the token.

@@ -57,6 +57,14 @@ module.exports = {
       },
       gasMultiplier: 1.3,
     },
+    'bsc-wool': {
+      url: `${process.env.BSC_API}`,
+      accounts: {
+        mnemonic: `${process.env.BSC_WOOL_MNEMONIC}`
+      },
+      // gasPrice: 6 * 1e9, // 1 * 1e9 == 1 GWei
+      gasMultiplier: 1.3,
+    },
     'bsc-main-test': {
       url: `${process.env.BSC_API}`,
       accounts: {
