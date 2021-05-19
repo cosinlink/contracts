@@ -217,8 +217,8 @@ Sum BNB = ${sumETH / 1e18.toFixed(2)}`
     const percentHold = sumTarget / 1e18 / circulation * 100
     const sumOther = circulation - sumTarget / 1e18
     msg += `Hold in Circulation: ${percentHold.toFixed(4)}%\r\n`
-    msg += `Sum Hold = ${sumTarget / 1e18.toFixed(2)} SHIBSC = ${sumTarget * price / 1e18.toFixed(4)} BNB\r\n`
-    msg += `Sum Other = ${sumOther.toFixed(2)} SHIBSC = ${(sumOther * price).toFixed(4)} BNB`
+    msg += `Sum Hold = ${sumTarget / 1e18.toFixed(2)} ERC20 = ${sumTarget * price / 1e18.toFixed(4)} BNB\r\n`
+    msg += `Sum Other = ${sumOther.toFixed(2)} ERC20 = ${(sumOther * price).toFixed(4)} BNB`
 
     msg += `\r\n`
     msg += `\r\n`
