@@ -8,6 +8,7 @@ const readline = require('readline');
 
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const BLACK_HOLE_ADDRESS = '0x000000000000000000000000000000000000dead'
 let lastPrice = {}
 const Interval_Seconds = 120
 const SCOUT_ADDRESS = '0x1e2b7ae4f142fe8364114bdf6ffee18b1effe595'
@@ -105,6 +106,23 @@ const multiCallGetBalance = async () => {
         })
     }
 
+
+    // 5. blackhole address, LP address
+    callObjVec.push({
+        target: targetTokenInfo.address,
+        instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+        functionName: 'balanceOf',
+        params: [BLACK_HOLE_ADDRESS],
+    })
+    callObjVec.push({
+        target: targetTokenInfo.address,
+        instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+        functionName: 'balanceOf',
+        params: [lpTargetWETHAddress],
+    })
+
+
+
     const { returnData } = await multiCall(
         await generateCalls(callObjVec),
         BSCMulticallAddress,
@@ -150,6 +168,12 @@ const multiCallGetBalance = async () => {
         }
     }
 
+    // -5 get balance of  blackhole, lp
+    const totalSupply = 1e15
+    const balanceBlack = hexToBigNumber(returnDataVec.shift())
+    const balanceLp = hexToBigNumber(returnDataVec.shift())
+
+
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
     const fmt = 'YYYY-mm-dd HH:MM:SS'
@@ -181,7 +205,25 @@ Sum BNB = ${sumETH / 1e18.toFixed(2)}`
     msg += `\r\n`
     msg += `\r\n`
 
-    // 3. First 10 address of  Target Token
+    // 3. token rate distribution
+    const circulation = totalSupply - balanceBlack / 1e18 - balanceLp / 1e18
+    const percentCir = (circulation / totalSupply) * 100
+    const percentBlack = balanceBlack / 1e18 / totalSupply * 100
+    const percentLP = balanceLp / 1e18 / totalSupply * 100
+
+    msg += `Blackhole: ${percentBlack.toFixed(4)}% | LP: ${percentLP.toFixed(4)}% | Circulation: ${percentCir.toFixed(4)}%`
+    msg += `\r\n`
+
+    const percentHold = sumTarget / 1e18 / circulation * 100
+    const sumOther = circulation - sumTarget / 1e18
+    msg += `Hold in Circulation: ${percentHold.toFixed(4)}%\r\n`
+    msg += `Sum Hold = ${sumTarget / 1e18.toFixed(2)} SHIBSC = ${sumTarget * price / 1e18.toFixed(4)} BNB\r\n`
+    msg += `Sum Other = ${sumOther.toFixed(2)} SHIBSC = ${(sumOther * price).toFixed(4)} BNB`
+
+    msg += `\r\n`
+    msg += `\r\n`
+
+    // 4. First 10 address of  Target Token
     const objArr = []
     for (let i = 0; i < addresses.length; i++) {
         objArr.push({
