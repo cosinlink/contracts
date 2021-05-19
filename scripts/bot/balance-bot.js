@@ -213,6 +213,7 @@ Sum BNB = ${sumETH / 1e18.toFixed(2)}`
 
     msg += `Blackhole: ${percentBlack.toFixed(2)}% | LP: ${percentLP.toFixed(2)}% | Circulation: ${percentCir.toFixed(2)}%`
     msg += `\r\n`
+    msg += `\r\n`
 
     const percentHold = sumTarget / 1e18 / circulation * 100
     const sumOther = circulation - sumTarget / 1e18
