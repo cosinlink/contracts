@@ -211,14 +211,14 @@ Sum BNB = ${sumETH / 1e18.toFixed(2)}`
     const percentBlack = balanceBlack / 1e18 / totalSupply * 100
     const percentLP = balanceLp / 1e18 / totalSupply * 100
 
-    msg += `Blackhole: ${percentBlack.toFixed(4)}% | LP: ${percentLP.toFixed(4)}% | Circulation: ${percentCir.toFixed(4)}%`
+    msg += `Blackhole: ${percentBlack.toFixed(2)}% | LP: ${percentLP.toFixed(2)}% | Circulation: ${percentCir.toFixed(2)}%`
     msg += `\r\n`
 
     const percentHold = sumTarget / 1e18 / circulation * 100
     const sumOther = circulation - sumTarget / 1e18
-    msg += `Hold in Circulation: ${percentHold.toFixed(4)}%\r\n`
-    msg += `Sum Hold = ${sumTarget / 1e18.toFixed(2)} ERC20 = ${sumTarget * price / 1e18.toFixed(4)} BNB\r\n`
-    msg += `Sum Other = ${sumOther.toFixed(2)} ERC20 = ${(sumOther * price).toFixed(4)} BNB`
+    msg += `Hold in Circulation: ${percentHold.toFixed(2)}%\r\n`
+    msg += `Sum Hold = ${sumTarget / 1e18.toFixed(2)} ERC20 = ${(sumTarget * price / 1e18).toFixed(2)} BNB\r\n`
+    msg += `Sum Other = ${sumOther.toFixed(2)} ERC20 = ${(sumOther * price).toFixed(2)} BNB`
 
     msg += `\r\n`
     msg += `\r\n`
