@@ -200,8 +200,7 @@ The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     last_scout_balance = scout_balance
 
     // 2. SUM Balance
-    msg += `Sum ERC20 = ${sumTarget / 1e18.toFixed(2)} = ${sumTarget * price / 1e18.toFixed(4)}
-Sum BNB = ${sumETH / 1e18.toFixed(2)}`
+    msg += `Sum BNB = ${sumETH / 1e18.toFixed(2)}`
     msg += `\r\n`
     msg += `\r\n`
 
