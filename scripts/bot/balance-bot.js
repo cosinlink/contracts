@@ -35,6 +35,7 @@ const wethTokenInfo = {
 }
 
 const lpTargetWETHAddress = '0x0b85ddf1921ab0efbfabd0b178b90f64ea2b11d3'
+const lpWETHBUSDAddress = '0x1b96b92314c44b159149f7e0303511fb2fc4774f'
 
 const getAddressesFromTxt = async () => {
     const addresses = []
@@ -77,6 +78,19 @@ const multiCallGetBalance = async () => {
         instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
         functionName: 'balanceOf',
         params: [lpTargetWETHAddress],
+    })
+
+    callObjVec.push({
+        target: usdTokenInfo.address,
+        instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+        functionName: 'balanceOf',
+        params: [lpWETHBUSDAddress],
+    })
+    callObjVec.push({
+        target: wethTokenInfo.address,
+        instance: await ethers.getContractAt('MdexPair', ZERO_ADDRESS),
+        functionName: 'balanceOf',
+        params: [lpWETHBUSDAddress],
     })
 
     // 2. get Scout target balance
@@ -141,6 +155,15 @@ const multiCallGetBalance = async () => {
         (targetBalanceOfLpAddress / 10 ** targetTokenInfo.decimals)
     lastPrice = price
 
+    // - 1-2. get weth-busd price
+    const usdtBalanceOfLp2Address = hexToBigNumber(returnDataVec.shift())
+    const wethBalanceOfLp2Address = hexToBigNumber(returnDataVec.shift())
+    const price2 =
+        (usdtBalanceOfLp2Address) /
+        (wethBalanceOfLp2Address)
+
+    const usdPrice = price * price2
+
     // - 2. get scout balance
     const scout_balance = hexToBigNumber(returnDataVec.shift())
 
@@ -202,6 +225,8 @@ The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     last_scout_balance = scout_balance
 
     // 2. SUM Balance
+    msg += `Price = ${usdPrice.toFixed(11)}`
+    msg += `\r\n`
     msg += `Sum BNB = ${sumETH / 1e18.toFixed(2)}`
     msg += `\r\n`
     msg += `\r\n`
