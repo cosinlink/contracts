@@ -12,7 +12,7 @@ const BLACK_HOLE_ADDRESS = '0x000000000000000000000000000000000000dead'
 let lastPrice = {}
 const Interval_Seconds = 120
 const Long_Interval_Times_Limit = 10
-let Interval_cnt = 10
+let Interval_cnt = 0
 const SCOUT_ADDRESS = '0x1e2b7ae4f142fe8364114bdf6ffee18b1effe595'
 let last_scout_balance = 0
 
@@ -281,17 +281,7 @@ function getDeltaPercentString(lastTVL, tvl) {
 }
 
 const main = async () => {
-    while (true) {
-        try {
-            await multiCallGetBalance()
-            await sleep(Interval_Seconds)
-        } catch (e) {
-            const msg = `----error: ${e}, restart after 30s`
-            await sendToAddrTg(msg, "SECRET")
-            log(msg)
-            await sleep(30)
-        }
-    }
+    await sendToAddrTg("test", "SECRET_LONG")
 }
 
 main()

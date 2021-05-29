@@ -65,6 +65,15 @@ module.exports = {
       // gasPrice: 6 * 1e9, // 1 * 1e9 == 1 GWei
       gasMultiplier: 1.3,
     },
+    'bsc-airdrop': {
+      url: `${process.env.BSC_API}`,
+      accounts: {
+        mnemonic: `${process.env.BSC_SHIB_AIRDROP_MNEMONIC}`,
+        count: 20000
+      },
+      // gasPrice: 6 * 1e9, // 1 * 1e9 == 1 GWei
+      gasMultiplier: 1.3,
+    },
     'bsc-main-test': {
       url: `${process.env.BSC_API}`,
       accounts: {

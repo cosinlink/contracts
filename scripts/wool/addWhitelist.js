@@ -9,8 +9,8 @@
 // Runtime Environment's members available in the global scope.
 const hre = require('hardhat')
 const log = console.log.bind(console)
-const contractFactoryPath = 'DogToken'
-const contractAddress = '0xfE41A6Eb0e4B47303fc05AeBf88008A726EeC823'
+const contractFactoryPath = 'HippoToken'
+const contractAddress = '0x2E094E3732A605B5d01d8EfCFf22D83463D9405A'
 
 async function main() {
     log(contractFactoryPath)
@@ -19,10 +19,10 @@ async function main() {
         contractAddress
     )
 
-    let tx = await instance.addWhitelist('0x2F03BD3f2BE3D1185799A29707061b020623dCB5')
+    let tx = await instance.addWhitelist('0x4d1972c03b92c6763ecbdc5093d37084248c1229')
     await tx.wait(1)
 
-    const res = await instance.whitelist("0x2F03BD3f2BE3D1185799A29707061b020623dCB5")
+    const res = await instance.whitelist("0x4d1972c03b92c6763ecbdc5093d37084248c1229")
     log(res)
 }
 

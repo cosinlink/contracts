@@ -9,8 +9,8 @@
 // Runtime Environment's members available in the global scope.
 const hre = require('hardhat')
 const log = console.log.bind(console)
-const contractFactoryPath = 'DogToken'
-const contractAddress = '0xfE41A6Eb0e4B47303fc05AeBf88008A726EeC823'
+const contractFactoryPath = 'HippoToken'
+const contractAddress = '0x2E094E3732A605B5d01d8EfCFf22D83463D9405A'
 
 async function main() {
     log(contractFactoryPath)

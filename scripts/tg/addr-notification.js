@@ -2,7 +2,7 @@ const { TelegramClient } = require('messaging-api-telegram')
 require('dotenv').config()
 
 module.exports = async (text, tgGroupName) => {
-    if (text.indexOf('Big') > -1 && tgGroupName !== 'SECRET') {
+    if (text.indexOf('Big') > -1 && tgGroupName !== 'SECRET' && tgGroupName !== 'SECRET_LONG' ) {
         return
     }
 
