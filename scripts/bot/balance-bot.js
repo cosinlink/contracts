@@ -203,7 +203,7 @@ const multiCallGetBalance = async () => {
 
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
-    const fmt = 'YYYY-MM-DD hh:mm:ss'
+    const fmt = 'YYYY-MM-DD HH:mm:ss'
     const timeMsg = moment(date).add(8, 'hour').format(fmt)
 
     // 1. SCOUT
