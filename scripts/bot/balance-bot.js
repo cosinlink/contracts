@@ -225,7 +225,7 @@ The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     last_scout_balance = scout_balance
 
     // 2. SUM Balance
-    msg += `Price = ${usdPrice.toFixed(11)}`
+    msg += `Price = ${usdPrice.toFixed(11)} U`
     msg += `\r\n`
     msg += `Sum BNB = ${sumETH / 1e18.toFixed(2)}`
     msg += `\r\n`
