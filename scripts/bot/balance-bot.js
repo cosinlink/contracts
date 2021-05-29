@@ -5,6 +5,7 @@ const { sleep, dateFormat } = require('../utils/util')
 const sendToAddrTg = require('../tg/addr-notification')
 const fs = require('fs')
 const readline = require('readline');
+const moment = require('moment')
 
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -202,15 +203,16 @@ const multiCallGetBalance = async () => {
 
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
-    const fmt = 'YYYY-mm-dd HH:MM:SS'
+    const fmt = 'YYYY-MM-DD HH:MM:SS'
+    const timeMsg = moment(date).add(8, 'hour').format(fmt)
 
     // 1. SCOUT
     let msg
     if (scout_balance >= last_scout_balance) {
-        msg = `${dateFormat(fmt, date)}
+        msg = `${timeMsg}
 The Big Address(${SCOUT_ADDRESS}) No Operation`
     } else {
-        msg = `${dateFormat(fmt, date)} 
+        msg = `${timeMsg} 
 The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     }
 
@@ -270,7 +272,7 @@ The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     await sendToAddrTg(msg, "SECRET")
     Interval_cnt++
     if (Interval_cnt >= Long_Interval_Times_Limit) {
-        const longMsg = `Sum BNB = ${(sumETH / 1e18).toFixed(4)} | ` + getDeltaString(lastSumEth, sumETH)
+        const longMsg = `${timeMsg} | ${(sumETH / 1e18).toFixed(4)} | ` + getDeltaString(lastSumEth, sumETH)
         await sendToAddrTg(longMsg, "SECRET_LONG")
         lastSumEth = sumETH
         Interval_cnt = 0

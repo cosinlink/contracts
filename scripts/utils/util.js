@@ -1,4 +1,6 @@
 const { ecsign, toRpcSig } = require('ethereumjs-util')
+const moment = require('moment'); // require
+
 
 const sleep = async (seconds) => {
     // console.log(`waiting for block confirmations, about ${seconds}s`)
@@ -172,13 +174,12 @@ const retryPromise = async (txPromise, times) => {
 function dateFormat(fmt, date) {
     let ret
     const opt = {
-        'Y+': date.getFullYear().toString(), // 年
-        'm+': (date.getMonth() + 1).toString(), // 月
-        'd+': date.getDate().toString(), // 日
-        'H+': date.getHours().toString(), // 时
-        'M+': date.getMinutes().toString(), // 分
-        'S+': date.getSeconds().toString(), // 秒
-        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        'Y+': date.getFullYear().toString(), // year
+        'm+': (date.getMonth() + 1).toString(), // month
+        'd+': date.getDate().toString(), // day
+        'H+': date.getHours().toString(), // hour
+        'M+': date.getMinutes().toString(), // minute
+        'S+': date.getSeconds().toString(), // second
     }
     for (let k in opt) {
         ret = new RegExp('(' + k + ')').exec(fmt)
