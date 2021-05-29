@@ -10,8 +10,9 @@ const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const BLACK_HOLE_ADDRESS = '0x000000000000000000000000000000000000dead'
 let lastPrice = {}
+let lastSumEth
 const Interval_Seconds = 120
-const Long_Interval_Times_Limit = 10
+const Long_Interval_Times_Limit = 5
 let Interval_cnt = 10
 const SCOUT_ADDRESS = '0x1e2b7ae4f142fe8364114bdf6ffee18b1effe595'
 let last_scout_balance = 0
@@ -269,7 +270,9 @@ The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     await sendToAddrTg(msg, "SECRET")
     Interval_cnt++
     if (Interval_cnt >= Long_Interval_Times_Limit) {
-        await sendToAddrTg(msg, "SECRET_LONG")
+        const longMsg = `Sum BNB = ${(sumETH / 1e18).toFixed(4)} | ` + getDeltaString(lastSumEth, sumETH)
+        await sendToAddrTg(longMsg, "SECRET_LONG")
+        lastSumEth = sumETH
         Interval_cnt = 0
     }
 
@@ -283,10 +286,10 @@ function getDeltaString(lastTVL, tvl) {
     const delta = tvl - lastTVL
     const percent = (Math.abs(delta) / lastTVL) * 100
     if (delta < 0) {
-        return `-${percent.toFixed(4)}% / ${(delta / 10000).toFixed(4)}W`
+        return `-${percent.toFixed(4)}% / ${(delta / 1e18).toFixed(4)} BNB`
     }
 
-    return `+${percent.toFixed(4)}% / +${(delta / 10000).toFixed(4)}W`
+    return `+${percent.toFixed(4)}% / +${(delta / 1e18).toFixed(4)} BNB`
 }
 
 function getDeltaPercentString(lastTVL, tvl) {
