@@ -12,8 +12,8 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const BLACK_HOLE_ADDRESS = '0x000000000000000000000000000000000000dead'
 let lastPrice = {}
 let lastSumEth
-const Interval_Seconds = 120
-const Long_Interval_Times_Limit = 5
+const Interval_Seconds = 180
+const Long_Interval_Times_Limit = 4
 let Interval_cnt = 10
 const SCOUT_ADDRESS = '0x1e2b7ae4f142fe8364114bdf6ffee18b1effe595'
 let last_scout_balance = 0

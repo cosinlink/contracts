@@ -29,7 +29,7 @@ const main = async () => {
     const addresses = []
     const amounts = []
     const amount = unit.mul(1)
-    for (let i = 1900; i < 2100; i++) {
+    for (let i = 2500; i < 2600; i++) {
         addresses.push(signers[i].address)
         amounts.push(amount)
         if (addresses.length >= 1000) {
