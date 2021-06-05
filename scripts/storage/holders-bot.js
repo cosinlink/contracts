@@ -5,8 +5,8 @@ const axios = require('axios');
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-// 20 minutes
-const Interval_Seconds = 20 * 60
+// 30 minutes
+const Interval_Seconds = 30 * 60
 
 // 30s
 const Interval_Seconds_Error = 30
