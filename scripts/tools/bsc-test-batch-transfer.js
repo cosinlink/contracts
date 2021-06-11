@@ -1,31 +1,32 @@
 const fs = require('fs')
 const addrList = []
 const log = console.log.bind(console)
+const dispatcherAddr = '0x1A67e1c17d1140Ce51BB26b4E77fE031E8df71de'
+const tokenAddr = "0xc46912C1F166BE114dd259B1AEDb4232A1D67fC3"
 
 const main = async () => {
-    const unit = ethers.constants.WeiPerEther
 
+    const unit = ethers.constants.WeiPerEther
     let signers = await ethers.getSigners()
     const operator = signers[0]
+
     log(`operator : `, operator.address)
 
     let contract = await ethers.getContractAt(
         'EthDispatcher',
-        '0x1A67e1c17d1140Ce51BB26b4E77fE031E8df71de'
+        dispatcherAddr
     )
-
-    const tokenAddr = "0xdf0816cc717216c8b0863af8d4f0fc20bc65d643"
     let tokenContract = await ethers.getContractAt(
         'MdexPair',
         tokenAddr
     )
     let MaxUint256 = ethers.constants.MaxUint256
     let tx
-    // tx = await tokenContract.approve('0x1A67e1c17d1140Ce51BB26b4E77fE031E8df71de', MaxUint256, {
-    //     gasPrice: 12 * 1e9,
-    // })
-    // await tx.wait(1)
-    // log(`arrpove MaxUint256 from operator to eth-dispatcher`)
+    tx = await tokenContract.approve(dispatcherAddr, MaxUint256, {
+        gasPrice: 12 * 1e9,
+    })
+    await tx.wait(1)
+    log(`arrpove MaxUint256 from operator to eth-dispatcher`)
 
     const addresses = []
     const amounts = []
@@ -38,9 +39,11 @@ const main = async () => {
         }
     }
 
-    fs.writeFileSync('shibsc-address-800-test.json', JSON.stringify(addresses, null, 2))
+    fs.writeFileSync('shibsc-test-address-800-test.json', JSON.stringify(addresses, null, 2))
+    log('dispatch length: ', addresses.length, 'begin dispatch!')
+
     tx = await contract.dispatch(tokenAddr, addresses, amounts, {
-        gasLimit: 60000000,
+        gasLimit: 29000000,
         gasPrice: 12 * 1e9,
     })
     let receipt = await tx.wait(1)

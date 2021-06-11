@@ -10,7 +10,7 @@
 const hre = require('hardhat')
 const log = console.log.bind(console)
 const contractFactoryPath = 'HippoToken'
-const contractAddress = '0x2E094E3732A605B5d01d8EfCFf22D83463D9405A'
+const contractAddress = '0xc46912C1F166BE114dd259B1AEDb4232A1D67fC3'
 
 async function main() {
     log(contractFactoryPath)
@@ -21,7 +21,7 @@ async function main() {
 
     const unit = ethers.constants.WeiPerEther
     const amount = unit.mul(10000000000)
-    let tx = await instance.mint("0x959982b651E25f99667122F5c0044092639E491c", amount)
+    let tx = await instance.mint("0x69ff22bB2ba68474f7f378FB4b42E7807E308732", amount)
     await tx.wait(1)
 }
 

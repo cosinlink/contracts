@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-etherscan");
 require('dotenv').config()
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -74,6 +75,20 @@ module.exports = {
       // gasPrice: 6 * 1e9, // 1 * 1e9 == 1 GWei
       gasMultiplier: 1.3,
     },
+    'bsc-test-airdrop': {
+      url: `${process.env.BSC_TESTNET_API}`,
+      accounts: {
+        mnemonic: `${process.env.BSC_SHIB_AIRDROP_MNEMONIC}`,
+        count: 20000
+      },
+    },
+    'bsc-lei': {
+      url: `${process.env.BSC_API}`,
+      accounts: {
+        mnemonic: `${process.env.BSC_LEI_MN}`,
+        count: 200
+      },
+    },
     'bsc-main-test': {
       url: `${process.env.BSC_API}`,
       accounts: {
@@ -86,6 +101,11 @@ module.exports = {
         mnemonic: `${process.env.HECO_AIRDROP_RDTK_DEPLOYER_MNEMONIC}`
       },
     }
+  },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: process.env.BSC_LEI_ETHERSCAN
   },
   solidity: {
     compilers: [
