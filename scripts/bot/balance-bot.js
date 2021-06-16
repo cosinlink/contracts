@@ -216,11 +216,6 @@ The Big Address(${SCOUT_ADDRESS}) No Operation`
 The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     }
 
-    if (scout_balance / 1e18 < 4638149905667) {
-        msg = `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(${SCOUT_ADDRESS}) have Sold Some ERC20~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~` + msg
-        msg = `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(${SCOUT_ADDRESS}) have Sold Some ERC20~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~` + msg
-        msg = `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(${SCOUT_ADDRESS}) have Sold Some ERC20~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~` + msg
-    }
 
     msg += `\r\n`
     msg += `\r\n`
