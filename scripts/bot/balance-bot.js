@@ -204,7 +204,8 @@ const multiCallGetBalance = async () => {
     const timestamp = hexToBigNumber(returnDataVec[returnDataVec.length - 1])
     const date = new Date(timestamp * 1000)
     const fmt = 'YYYY-MM-DD HH:mm:ss'
-    const timeMsg = moment(date).add(8, 'hour').format(fmt)
+    // const timeMsg = moment(date).add(8, 'hour').format(fmt)
+    const timeMsg = moment(date).format(fmt)
 
     // 1. SCOUT
     let msg
@@ -216,11 +217,6 @@ The Big Address(${SCOUT_ADDRESS}) No Operation`
 The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
     }
 
-    if (scout_balance / 1e18 < 4638149905667) {
-        msg = `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(${SCOUT_ADDRESS}) have Sold Some ERC20~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~` + msg
-        msg = `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(${SCOUT_ADDRESS}) have Sold Some ERC20~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~` + msg
-        msg = `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(${SCOUT_ADDRESS}) have Sold Some ERC20~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~` + msg
-    }
 
     msg += `\r\n`
     msg += `\r\n`
