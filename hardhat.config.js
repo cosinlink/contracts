@@ -89,6 +89,10 @@ module.exports = {
         count: 200
       },
     },
+    'bsc-bird-nft': {
+      url: `${process.env.BSC_API}`,
+      accounts: [`${process.env.BSC_BIRD_DEV_SK}`],
+    },
     'bsc-main-test': {
       url: `${process.env.BSC_API}`,
       accounts: {
