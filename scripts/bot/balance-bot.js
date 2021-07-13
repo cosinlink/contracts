@@ -264,6 +264,15 @@ The Big Address(${SCOUT_ADDRESS}) is Changed !!!!!!!!!!!!! @CC_SHIT`
         msg += `\r\n`
     }
     msg += `\r\n`
+
+    // 5. First 10 address of  eth Token
+    objArr.sort((a, b) => b.eth - a.eth)
+    for (let i = 0; i < 10; i++) {
+        msg += `${i+1}. ${objArr[i].address}`
+        msg += `\r\n`
+    }
+    msg += `\r\n`
+
     log(msg)
     await sendToAddrTg(msg, "SECRET")
     Interval_cnt++
