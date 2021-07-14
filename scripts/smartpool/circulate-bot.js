@@ -69,8 +69,13 @@ const circulate = async () => {
     let tx
     for (let i = 0; i < instances.length; i++) {
         const strategy = instances[i]
-        tx = await strategy.circulate()
-        await tx.wait(1)
+
+        try {
+            tx = await strategy.circulate()
+            await tx.wait(20)
+        } catch (e) {
+            log("Failed!", i, strategy.address)
+        }
     }
     const balance = await signer.getBalance()
     log('current: ', balance / 1e18, 'used: ', (balanceBefore - balance) / 1e18)
