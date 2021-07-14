@@ -72,6 +72,7 @@ const circulate = async () => {
 
         try {
             tx = await strategy.circulate()
+            log("Success", i, strategy.address)
             await tx.wait(20)
         } catch (e) {
             log("Failed!", i, strategy.address)
