@@ -65,15 +65,20 @@ const init = async () => {
 const circulate = async () => {
     const [signer] = await ethers.getSigners();
     const balanceBefore = await signer.getBalance()
+    const hash = {}
 
     let tx
     for (let i = 0; i < instances.length; i++) {
         const strategy = instances[i]
 
         try {
+            if (hash[strategy.address]) {
+                continue
+            }
             tx = await strategy.circulate()
             log("Success", i, strategy.address)
             await tx.wait(20)
+            hash[strategy.address] = true
         } catch (e) {
             log("Failed!", i, strategy.address)
         }
