@@ -10,8 +10,8 @@ const moment = require('moment')
 const log = console.log.bind(console)
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-// 6 hours
-const Interval_Seconds = 6 * 60 * 60
+// 12 hours
+const Interval_Seconds = 12 * 60 * 60
 
 // pancake
 const targetTokenInfo = {
